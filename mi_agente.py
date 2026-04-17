@@ -48,7 +48,6 @@ class MiAgente(Agente):
     def __init__(self):
         super().__init__(nombre="Mi Agente")
         
-        self.visitados = []  # memoria de posiciones visitadas
         
         self.anterior = None  # ← clave
         
@@ -59,7 +58,6 @@ class MiAgente(Agente):
 
     def al_iniciar(self):
         
-        self.visitados = []
         self.anterior = None
 
     def decidir(self, percepcion):
@@ -89,12 +87,7 @@ class MiAgente(Agente):
         # return 'abajo'
         
 
-        print('Hola decidir')
-        for direccion in self.ACCIONES:
-            celda = percepcion[direccion]
-            if celda == 'meta':
-                return direccion
-            if celda == 'libre':
-                return direccion
+        pos = percepcion['posicion']
+        vert, horiz = percepcion['direccion_meta']
 
-        return 'abajo'  # ← Reemplazar con tu lógica
+        
