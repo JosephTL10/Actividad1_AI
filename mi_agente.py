@@ -58,7 +58,7 @@ class MiAgente(Agente):
 
     def al_iniciar(self):
         
-        self.anterior = None
+        self.anterior = None   # Aqui se guarda la posicion anterior
 
     def decidir(self, percepcion):
         
@@ -87,7 +87,59 @@ class MiAgente(Agente):
         # return 'abajo'
         
 
-        pos = percepcion['posicion']
-        vert, horiz = percepcion['direccion_meta']
-
+        pos = percepcion['posicion']  # esta es la posicion en la que se encuentra actualmente
         
+        vert, horiz = percepcion['direccion_meta'] # estas son las direcciones hacia la meta vetical y horizontal
+
+
+        # Esta funcion es para poder validar el movimiento para moverse a esa direccion
+        def es_valido(d):
+            return d in percepcion and (percepcion[d] == 'libre' or percepcion[d] == 'meta') # solo permite movimientos libres y la meta
+
+        # Esta funcion es para poder calcular la nueva posición que se podria llegar
+        def mover(d):
+            f, c = pos
+            if d == 'arriba':
+                return (f - 1, c)
+            
+            if d == 'abajo':
+                return (f + 1, c)
+            
+            if d == 'izquierda':
+                return (f, c - 1)
+            
+            return (f, c + 1)
+
+
+        # Es para ver si la meta está al lado para ir
+        for d in [vert, horiz]:
+            
+            if d in percepcion and percepcion[d] == 'meta':
+                self.anterior = pos
+                return d
+
+
+        # Esto es para intentar ir hacia la meta pero sin retroceder
+        for d in [vert, horiz]:
+            
+            if es_valido(d) and mover(d) != self.anterior:   # intenta avanzar a donde esta la meta pero no regresa a una posicion anterior
+                self.anterior = pos
+                return d
+
+
+        # Esto es para buscar cualquier movimiento válido sin retroceder
+        for d in self.ACCIONES:    # recorre el bucle para buscar un camino libre sino es que no puede ir directo a la meta pero no retrocede
+            
+            if es_valido(d) and mover(d) != self.anterior: # se mueve si es un camino valido pero que no sea repetido
+                self.anterior = pos
+                return d
+
+        # Esto es para que si no hay otra opción, moverse igual 
+        for d in self.ACCIONES:
+            
+            if es_valido(d):  # hace que si hay un camino valida se mueva ahi aunque sea un lugar repetido para que continue su camino hacia la meta
+                self.anterior = pos
+                return d
+
+
+        return 'arriba'  # esto es por seguridad 
