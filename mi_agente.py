@@ -137,7 +137,7 @@ class MiAgente(Agente):
         # Esto es para que si no hay otra opción, moverse igual 
         for d in self.ACCIONES:
             
-            if es_valido(d):  # hace que si hay un camino valida se mueva ahi aunque sea un lugar repetido para que continue su camino hacia la meta
+            if es_valido(d):  # hace que si hay un camino valido, se mueva ahi aunque sea un lugar repetido para que continue su camino hacia la meta
                 self.anterior = pos
                 return d
 
